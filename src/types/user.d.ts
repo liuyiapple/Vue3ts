@@ -4,3 +4,5 @@ export type UserType = {
   account: string
   avatar: string
 }
+
+export type CodeType = 'login' | 'registe' | 'changeMobile' | 'forgetmobile'

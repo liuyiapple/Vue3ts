@@ -17,7 +17,7 @@ serve.interceptors.request.use((config) => {
 
 serve.interceptors.response.use(
   ({ data }) => {
-    if (data.code !== 1000) {
+    if (data.code !== 10000) {
       showToast(data.message || '业务失败')
       return Promise.reject(data)
     }
