@@ -1,10 +1,7 @@
 <template>
-  <div>Home</div>
+  <div>article</div>
 </template>
 <script lang="ts" setup>
 import { reactive, toRef, ref } from 'vue'
-import { useRoute } from 'vue-router'
-const route = useRoute()
-console.log(route.meta)
 </script>
 <style lang="less" scoped></style>

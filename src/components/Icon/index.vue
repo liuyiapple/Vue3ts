@@ -11,7 +11,7 @@ defineProps<{
 </script>
 <style lang="scss" scoped>
 .icon {
-  width: 1rem;
-  height: 1rem;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 </style>

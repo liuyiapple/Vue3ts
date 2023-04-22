@@ -10,9 +10,10 @@
 </template>
 <script lang="ts" setup>
 import { useRouter } from 'vue-router'
-defineProps<{
+const props = defineProps<{
   title?: string
   rightText?: string
+  back?: () => void
 }>()
 
 const emit = defineEmits<{
@@ -25,6 +26,7 @@ const rightClick = () => {
 
 const router = useRouter()
 const leftClick = () => {
+  if (props.back) return props.back()
   if (history.state?.back) {
     router.back()
   } else {

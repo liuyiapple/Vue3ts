@@ -42,3 +42,6 @@ body {
 a {
   color: var(--cp-text2);
 }
+#nprogress .bar {
+  background-color: var(--cp-primary) !important;
+}

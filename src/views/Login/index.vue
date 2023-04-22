@@ -91,6 +91,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { loginByPassword, senCode, loginByMobile } from '@/services/user'
 import { useUserterStore } from '@/stores'
 import { onUnmounted } from 'vue'
+
 const store = useUserterStore()
 const mobile = ref<string>('13211112222')
 const password = ref<string>('abc12345')
@@ -101,8 +102,11 @@ const form = ref<FormInstance>()
 const isShow = ref<boolean>(false)
 // 路由实例
 const router = useRouter()
+console.log(router)
+
 // 路由信息
 const route = useRoute()
+console.log(route.meta)
 const onSubmit = async () => {
   if (!agree.value) return showToast('勾选同意协议')
   const res = isPass.value
