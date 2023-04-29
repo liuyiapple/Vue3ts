@@ -1,8 +1,19 @@
 <template>
   <div class="patient-page">
-    <nav-bar title="家庭档案"></nav-bar>
+    <nav-bar :title="isChange ? '选择患者' : '家庭档案'"></nav-bar>
+    <!-- 头部提示 -->
+    <div class="patient-change" v-if="isChange">
+      <h3>请选择患者信息</h3>
+      <p>以便医生给出更准确的治疗，信息仅医生可见</p>
+    </div>
     <div class="patient-list">
-      <div class="patient-item" v-for="(item, index) in list" :key="item.id">
+      <div
+        class="patient-item"
+        v-for="(item, index) in list"
+        :key="item.id"
+        @click="selectedPatient(item)"
+        :class="{ selected: patientId === item.id }"
+      >
         <div class="info">
           <span class="name">{{ item.name }}</span>
           <span class="id">{{
@@ -11,7 +22,7 @@
           <span>{{ item.genderValue }}</span>
           <span>{{ item.age }}岁</span>
         </div>
-        <div class="icon" @click="clickShowPopup(item)">
+        <div class="icon" @click.stop="clickShowPopup(item)">
           <Icon name="user-edit" />
         </div>
         <div class="tag" v-if="item.defaultFlag === 1">默认</div>
@@ -21,6 +32,10 @@
         <p>添加患者</p>
       </div>
       <div class="patient-tip">最多可添加 6 人</div>
+    </div>
+    <!-- 底部按钮 -->
+    <div class="patient-next" v-if="isChange">
+      <van-button type="primary" round block @click="next">下一步</van-button>
     </div>
     <!-- 右侧弹出 -->
     <van-popup v-model:show="showRight" position="right">
@@ -74,14 +89,27 @@ import {
   editPatient,
   delPatient,
 } from '@/services/user'
-import type { PatientListType, UserFormType } from '@/types/user'
+import type { PatientListType, UserFormType, PatientType } from '@/types/user'
 import { ref, onMounted, computed } from 'vue'
 import { nameRules, idCardRules } from '@/utils/rules'
-import { FormInstance, showConfirmDialog, showSuccessToast } from 'vant'
+import {
+  FormInstance,
+  showConfirmDialog,
+  showSuccessToast,
+  showToast,
+} from 'vant'
+import { useRoute, useRouter } from 'vue-router'
+import { useConsultStore } from '@/stores'
+const store = useConsultStore()
 const list = ref<PatientListType>([])
 onMounted(async () => {
   const res = await getPatientList()
   list.value = res.data
+  if (isChange.value && list.value.length) {
+    const defaultPatient = list.value.find((item) => item.defaultFlag == 1)
+    if (defaultPatient) patientId.value = defaultPatient.id
+    else patientId.value = list.value[0].id
+  }
 })
 const options = [
   { label: '男', value: 1 },
@@ -144,9 +172,47 @@ const delPatientHandle = async () => {
   list.value = res.data
   showSuccessToast('删除成功')
 }
+
+const route = useRoute()
+const isChange = computed(() => route.query.isChange === '1')
+
+// 选中患者
+const patientId = ref()
+const selectedPatient = (item: PatientType) => {
+  if (isChange.value) {
+    patientId.value = item.id
+  }
+}
+const router = useRouter()
+const next = () => {
+  if (!patientId.value) return showToast('请选择患者')
+  store.setPatientId(patientId.value)
+  router.push('/consult/pay')
+}
 </script>
 
 <style lang="scss" scoped>
+.patient-change {
+  padding: 15px;
+  > h3 {
+    font-weight: normal;
+    margin-bottom: 5px;
+  }
+  > p {
+    color: var(--cp-text3);
+  }
+}
+.patient-next {
+  padding: 15px;
+  background-color: #fff;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 80px;
+  box-sizing: border-box;
+}
+
 .patient-page {
   padding: 46px 0 80px;
   :deep() {

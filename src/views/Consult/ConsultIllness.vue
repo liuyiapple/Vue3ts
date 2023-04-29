@@ -52,16 +52,15 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { IllnessTime } from '@/enums'
-import type { ConsultIllnessType } from '@/types/consult'
+import type { ConsultIllnessType, Image } from '@/types/consult'
 import { uploadImage } from '@/services/consult'
 import type {
   UploaderAfterRead,
   UploaderFileListItem,
 } from 'vant/lib/uploader/types'
-import { computed } from 'vue'
-import { showToast } from 'vant'
+import { showConfirmDialog, showToast } from 'vant'
 import { useConsultStore } from '@/stores'
 import { useRouter } from 'vue-router'
 const router = useRouter()
@@ -94,10 +93,10 @@ const form = ref<ConsultIllnessType>({
   illnessDesc: '',
   illnessTime: undefined,
   consultFlag: undefined,
-  picutures: [],
+  pictures: [],
 })
 
-const fileList = ref([])
+const fileList = ref<Image[]>([])
 const onAfterRead: UploaderAfterRead = (item) => {
   if (Array.isArray(item) || !item.file) return
   item.status = 'uploading'
@@ -107,7 +106,7 @@ const onAfterRead: UploaderAfterRead = (item) => {
       item.status = 'done'
       item.message = undefined
       item.url = res.data.url
-      form.value.picutures.push(res.data)
+      form.value.pictures?.push(res.data)
     })
     .catch(() => {
       item.status = 'failed'
@@ -115,7 +114,7 @@ const onAfterRead: UploaderAfterRead = (item) => {
     })
 }
 const onDeleteImg = (item: UploaderFileListItem) => {
-  form.value.picutures = form.value.picutures?.filter(
+  form.value.pictures = form.value.pictures?.filter(
     (pic: any) => pic.url !== item.url
   )
 }
@@ -134,6 +133,21 @@ const next = () => {
   store.setIllness(form.value)
   router.push('/user/patient?isChange=1')
 }
+onMounted(() => {
+  if (store.consult.illnessDesc) {
+    showConfirmDialog({
+      title: '温馨提示',
+      message: '是否需要之前填写的病情信息？',
+      closeOnPopstate: false,
+    }).then(() => {
+      const { illnessDesc, illnessTime, consultFlag, pictures } = store.consult
+      console.log(pictures, 'pictures')
+
+      form.value = { illnessDesc, illnessTime, consultFlag, pictures }
+      fileList.value = pictures || []
+    })
+  }
+})
 </script>
 <style lang="scss" scoped>
 .consult-illness-page {

@@ -81,7 +81,7 @@ export type Consult = {
   depId: string
   illnessDesc: IllnessTime
   consultFlag: 0 | 1
-  picutures: Image[]
+  pictures: Image[]
   patientId: string
   couponId: string
   illnessTime: string
@@ -105,5 +105,5 @@ export type TopDep = SubDep & {
 }
 export type ConsultIllnessType = Pink<
   PartialConsult,
-  'illnessDesc' | 'picutures' | 'consultFlag' | 'illnessTime'
+  'illnessDesc' | 'pictures' | 'consultFlag' | 'illnessTime'
 >
