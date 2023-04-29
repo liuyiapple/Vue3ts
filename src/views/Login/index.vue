@@ -102,11 +102,9 @@ const form = ref<FormInstance>()
 const isShow = ref<boolean>(false)
 // 路由实例
 const router = useRouter()
-console.log(router)
 
 // 路由信息
 const route = useRoute()
-console.log(route.meta)
 const onSubmit = async () => {
   if (!agree.value) return showToast('勾选同意协议')
   const res = isPass.value
