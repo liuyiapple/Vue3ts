@@ -22,7 +22,12 @@ export const useConsultStore = defineStore(
       consult.value.pictures = illness.pictures
     }
     // 患者id
-    const setPatientId = (id: string) => (consult.value.id = id)
+    const setPatientId = (id: string) => (consult.value.patientId = id)
+    // 优惠卷
+    const setCouponId = (id: string) => (consult.value.couponId = id)
+
+    // 清理
+    const clear = () => (consult.value = {})
     return {
       consult,
       setType,
@@ -30,6 +35,8 @@ export const useConsultStore = defineStore(
       setDep,
       setIllness,
       setPatientId,
+      setCouponId,
+      clear,
     }
   },
   {

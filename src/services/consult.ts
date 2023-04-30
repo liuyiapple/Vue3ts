@@ -6,6 +6,10 @@ import type {
   FollowType,
   TopDep,
   Image,
+  ConsultOrderPreParams,
+  ConsultOrderPerData,
+  PartialConsult,
+  ConsultOrderItem,
 } from '@/types/consult'
 import { request } from '@/utils/request'
 
@@ -31,4 +35,46 @@ export const uploadImage = (file: File) => {
   const fd = new FormData()
   fd.append('file', file)
   return request<Image>('upload', 'POST', fd)
+}
+
+export const getConsultOrderPre = (params: ConsultOrderPreParams) => {
+  return request<ConsultOrderPerData>(
+    '/patient/consult/order/pre',
+    'GET',
+    params
+  )
+}
+
+// 生成订单
+export const createConsultOrder = (data: PartialConsult) => {
+  return request<{ id: string }>('patient/consult/order', 'POST', data)
+}
+
+// 获取支付地址
+export const getPayUrl = (params: {
+  paymentMethod: 0 | 1
+  payCallback: string
+  orderId: string
+}) => {
+  return request<{ payUrl: string }>('patient/consult/pay', 'POST', params)
+}
+
+export const getConsultOrderDetail = (orderId: string) => {
+  return request<ConsultOrderItem>('patient/consult/order/detail', 'GET', {
+    orderId,
+  })
+}
+
+export const getPrescriptionPic = (id?: string) => {
+  return request<{ url: string }>(`patient/consult/prescription/${id}`, 'GET')
+}
+
+export const evaluateConsultOrder = (data: {
+  docId: string
+  orderId: string
+  score: number
+  content: string
+  anonymousFlag: 0 | 1
+}) => {
+  return request('patient/order/evaluate', 'POST', data)
 }

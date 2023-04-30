@@ -15,7 +15,7 @@
         </template>
         健康百科
       </van-tabbar-item>
-      <van-tabbar-item to="/notify">
+      <van-tabbar-item to="/notify" :badge="unReadMsg || ''">
         <template #icon="{ active }">
           <Icon :name="`home-notice-${active ? 'active' : 'default'}`" />
         </template>
@@ -30,7 +30,16 @@
     </van-tabbar>
   </div>
 </template>
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { getUnreadMessageData } from '@/services/user'
+import { onMounted, ref } from 'vue'
+const unReadMsg = ref<number>(0)
+onMounted(async () => {
+  const res = await getUnreadMessageData()
+  console.log(res.data)
+  unReadMsg.value = res.data
+})
+</script>
 <style lang="scss" scoped>
 .layout-page {
   :deep() {

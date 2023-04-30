@@ -2,8 +2,9 @@ import router from '@/router'
 import { useUserterStore } from '@/stores'
 import axios, { AxiosError, Method } from 'axios'
 import { showToast } from 'vant'
+export const baseURL = 'https://consult-api.itheima.net/'
 const serve = axios.create({
-  baseURL: 'https://consult-api.itheima.net/',
+  baseURL,
   timeout: 5000,
 })
 serve.interceptors.request.use((config) => {
