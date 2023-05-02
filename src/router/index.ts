@@ -109,7 +109,7 @@ const router = createRouter({
 router.beforeEach((to) => {
   nprogress.start()
   const store = useUserterStore()
-  const whiteList: string[] = ['/login']
+  const whiteList: string[] = ['/login', '/login/callback']
   if (!store.user?.token && !whiteList.includes(to.path)) return '/login'
 })
 
