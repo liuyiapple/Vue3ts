@@ -93,7 +93,7 @@ import { useUserterStore } from '@/stores'
 import { onUnmounted } from 'vue'
 
 const store = useUserterStore()
-const mobile = ref<string>('13211112222')
+const mobile = ref<string>('13230000001')
 const password = ref<string>('abc12345')
 const code = ref<string>('')
 const agree = ref<boolean>(false)

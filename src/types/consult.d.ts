@@ -1,4 +1,5 @@
 import { ConsultType, IllnessTime, OrderType } from '@/enums'
+import { PatientType } from './user'
 
 export type KnowledgeType = {
   id: string
@@ -131,7 +132,7 @@ export type ConsultOrderItem = Consult & {
   /** 医生信息 */
   docInfo?: Doctor
   /** 患者信息 */
-  patientInfo: Patient
+  patientInfo: PatientType
   /** 订单编号 */
   orderNo: string
   /** 订单状态 */
@@ -154,4 +155,13 @@ export type ConsultOrderItem = Consult & {
   pointDeduction: number
   /** 实付款 */
   actualPayment: number
+}
+export type ConsultOrderListParams = DoctorParamsType & {
+  type: ConsultType
+}
+
+export type COnsultOrderPage = {
+  total: number
+  pageTotal: number
+  rows: ConsultOrderItem[]
 }

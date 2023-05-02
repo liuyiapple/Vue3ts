@@ -121,7 +121,9 @@
           <div class="num">x{{ med.quantity }}</div>
         </div>
       </div>
-      <div class="foot"><span>购买药品</span></div>
+      <div class="foot" @click="buy(item.msg.prescription)">
+        <span>购买药品</span>
+      </div>
     </div>
   </div>
   <!-- 评价卡片，后期实现 -->
@@ -138,22 +140,19 @@
 defineProps<{
   item: Message
 }>()
-import dayjs from 'dayjs'
-import { IllnessTime, MsgType } from '@/enums'
-import { Message } from '@/types/room'
-import { timeOptions, flagOptions } from '@/services/constants'
-import { Image } from '@/types/consult'
-import { showImagePreview, showToast } from 'vant'
+import { useShowPresctiption } from '@/composables'
+import { MsgType, PrescriptionStatus } from '@/enums'
 import { useUserterStore } from '@/stores'
-import { getPrescriptionPic } from '@/services/consult'
+import { Image } from '@/types/consult'
+import { Message, Prescription } from '@/types/room'
+import { getConsultFlagText, getIllnessTimeText } from '@/utils/filter'
+import dayjs from 'dayjs'
+import { showImagePreview, showToast } from 'vant'
 import EvaluateCard from './EvaluateCard.vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const store = useUserterStore()
-const getIllnessTimeText = (time: IllnessTime) => {
-  return timeOptions.find((item) => item.value === time)?.label
-}
-const getConsultFlagText = (flag: 0 | 1) => {
-  return flagOptions.find((item) => item.value === flag)?.label
-}
+
 const onPreviewImage = (img: Image[]) => {
   if (img && img.length) {
     showImagePreview(img.map((item) => item.url))
@@ -162,9 +161,16 @@ const onPreviewImage = (img: Image[]) => {
   }
 }
 const formatTime = (time: string) => dayjs(time).format('HH:mm')
-const onShowPre = async (id?: string) => {
-  const res = await getPrescriptionPic(id)
-  showImagePreview([res.data.url])
+const { onShowPre } = useShowPresctiption()
+
+//
+const buy = (pre?: Prescription) => {
+  if (!pre) return
+  if (pre.status === PrescriptionStatus.Invalid) return showToast('失效订单')
+  if (pre.status === PrescriptionStatus.NotPayment && !pre.orderId) {
+    return router.push(`/order/pay?id=${pre.id}`)
+  }
+  router.push(`/order/${pre.orderId}`)
 }
 </script>
 <style lang="scss" scoped>

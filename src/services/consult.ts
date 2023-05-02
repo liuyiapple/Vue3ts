@@ -10,6 +10,7 @@ import type {
   ConsultOrderPerData,
   PartialConsult,
   ConsultOrderItem,
+  COnsultOrderPage,
 } from '@/types/consult'
 import { request } from '@/utils/request'
 
@@ -77,4 +78,16 @@ export const evaluateConsultOrder = (data: {
   anonymousFlag: 0 | 1
 }) => {
   return request('patient/order/evaluate', 'POST', data)
+}
+
+export const getConsultOrderList = (params: ConsultOrderPreParams) => {
+  return request<COnsultOrderPage>('patient/consult/order/list', 'GET', params)
+}
+
+export const cancelOrder = (id: string) => {
+  return request(`patient/order/cancel/${id}`, 'PUT')
+}
+
+export const deleteOrder = (id: string) => {
+  return request(`patient/order/${id}`, 'DELETE')
 }
